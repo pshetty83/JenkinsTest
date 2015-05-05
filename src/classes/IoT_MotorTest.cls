@@ -7,7 +7,7 @@ public with sharing class IoT_MotorTest {
 
 	public void stop(){
 		this.insertMessage('no');
-		system.debug('Please deploy 24');
+		system.debug('Please deploy 25');
 	}
 
 	public void start(){
