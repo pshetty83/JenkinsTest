@@ -18,12 +18,12 @@
     <!-- Shows deploying code, running all tests, and running tests (1 of which fails), and logging. -->
     <target name="deployToServer">
       <!-- Upload the contents of the "codepkg" package, running all tests -->
-      <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" maxPoll="${sf.maxPoll}" deployRoot="src" runAllTests="true" rollbackOnError="true" logType="Debugonly"/>
+      <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" maxPoll="${sf.maxPoll}" deployRoot="./src" runAllTests="true" rollbackOnError="true" logType="Debugonly"/>
     </target>
 
     <!-- Shows check only; never actually saves to the server -->
     <target name="deployCheckOnly">
-      <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" maxPoll="${sf.maxPoll}" deployRoot="codepkg" checkOnly="true"/>
+      <sf:deploy username="${sf.username}" password="${sf.password}" serverurl="${sf.serverurl}" maxPoll="${sf.maxPoll}" deployRoot="./src" checkOnly="true"/>
     </target>
 
 </project>
