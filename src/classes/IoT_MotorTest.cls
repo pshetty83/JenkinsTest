@@ -7,7 +7,7 @@ public with sharing class IoT_MotorTest {
 
 	public void stop(){
 		this.insertMessage('no');
-		system.debug('Please work');
+		system.debug('No hope');
 	}
 
 	public void start(){
