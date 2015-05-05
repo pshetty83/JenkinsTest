@@ -1,0 +1,40 @@
+<apex:page showHeader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false">
+
+<html>
+	<head>
+    	<meta charset="utf-8"/>
+     	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+	  	<!-- jquerymobile and custom stylesheets and scripts-->
+	  	<apex:includeScript value="{!$Resource.i8_jquery_1_11}"/>
+	  	<apex:includeScript value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.js')}"/>      
+	  	<apex:stylesheet value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.css')}"/>
+
+		<script type="text/javascript">
+
+			//Generic
+			j$ = jQuery.noConflict();
+
+			j$(document).on("pageinit", "#home" ,function(){ 
+				var recordId = "a04F000000Z56Lh";
+				var navUrl = "sforce.one.navigateToSObject(\'" + recordId + "\')";
+				//var navUrl = 'sforce.one.navigateToList(listViewId, listViewName, scope)
+				j$("a").attr("href", "javascript:" + navUrl);
+				console.log(j$('a').attr('href'));
+
+			});			
+
+
+		</script>
+
+	</head>
+
+	<body>
+	<div data-role="page" id="home">
+		<a href="#" id="detail" class="ui-btn">Show Detail</a>		
+	</div>	
+
+
+	</body>
+</html>
+</apex:page>

@@ -1,0 +1,75 @@
+<!-- Sample for creating a scatterplot using "Scales" -->
+
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeScript value="{!$Resource.d3}"/>
+
+    <div align="center" style="margin-top:40px">
+     <script type="text/javascript">
+    	
+		var dataset = {
+		  apples: [50,50],
+		};
+
+		var width = 460,
+		    height = 300,
+		    radius = Math.min(width, height) / 2;
+
+		var color = d3.scale.category20();
+
+		var pie = d3.layout.pie()
+		    .sort(null);
+
+		var arc = d3.svg.arc()
+		    .innerRadius(radius - 70)
+		    .outerRadius(radius - 50);
+
+		var svg = d3.select("body").append("svg")
+		    .attr("width", width)
+		    .attr("height", height)
+		    .append("g")
+		    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+	  var center = svg.append("circle")
+	      .attr("r", radius - 70)
+	      .attr("fill", "Yellow")
+	      .on("click", clicked);
+	
+      
+		var path = svg.selectAll("path")
+		    .data(pie(dataset.apples))
+		  .enter().append("path")
+		    .attr("fill", function(d, i) { return color(i); })
+		    .attr("d", arc);
+
+		svg.append("text")
+		.attr("text-anchor", "middle")
+		.attr("style", "font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;font-size: 48px;font-weight: bold;")
+		.attr("fill", "Black")
+		.attr("dy", "1em")
+	    .text("600");			    
+
+		  function clicked() {
+		    alert('clicked');
+		  }
+     </script>  
+     <style type="text/css">
+
+	    body {
+		  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		  margin: auto;
+		  position: relative;
+		  width: 960px;
+		}
+
+		text {
+		  font: 10px sans-serif;
+		}
+
+		form {
+		  position: absolute;
+		  right: 10px;
+		  top: 10px;
+		}
+     </style> 	
+    </div>
+</apex:page>

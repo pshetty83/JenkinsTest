@@ -1,0 +1,246 @@
+<apex:page controller="I8_PremiumCalculatorController" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0" html-ng-app="premcalc">
+
+<!-- <html xmlns:ng="http://angularjs.org"  lang="en"> -->
+    <head>
+
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <title>In Force</title>
+
+      <!-- jquerymobile and custom stylesheets and scripts-->
+      <apex:includeScript value="{!$Resource.i8_jquery_1_11}"/>
+      <apex:includeScript value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.js')}"/>      
+      <apex:stylesheet value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.css')}"/>
+      <apex:includeScript value="{!$Resource.angular}"/>
+      <apex:includeScript value="{!$Resource.d3}"/>
+      <apex:includeScript value="{!$Resource.i8_custom_script}"/>
+      <apex:stylesheet value="{!$Resource.i8_custom_css}"/>
+
+    </head>
+
+    <body>
+   <!-- Opportunity List Home Page-->
+     <div data-role="page" id="calculator">
+
+      <div data-role="header" data-position="fixed" data-id="inforce" style="margin-top:10px">
+         <div data-role="navbar">
+            <ul>
+              <li>
+                <a href="/apex/i8_PremiumCalculator" id="tabCalculator" class="ui-btn-active ui-state-persist">
+                  Premium Calculator
+              </a>
+            </li>            
+              <li>
+                <a href="/apex/i8_QuotesList" id="tabMyQuotes">
+                  MyQUOTES
+              </a>
+            </li>            
+            <li>
+              <a href="/apex/i8_OpportunityList" id="tabMyDeals">
+                  MyDEALS
+              </a>
+            </li>
+            <li>
+              <a href="/apex/i8_SalesAid" id="tabSalesAid">
+                  Sales Aid
+              </a>
+            </li>
+            <li>
+              <a href="/apex/i8_Reports" id="tabReports">
+                  Facts And Figures
+              </a>
+            </li>            
+            </ul>
+          </div> <!-- /navbar -->
+      </div> <!-- header -->
+
+      <div role="main" class="ui-content" >
+        <div class="ui-body ui-body-a ui-corner-all" style="margin:10px" ng-controller="PremiumController">
+            <apex:form >
+                <fieldset class="ui-grid-b">
+                    <div class="ui-block-a" style="width:40%">
+                        <fieldset class="ui-grid-b"> <!-- Fname/Lname-->
+                            <div class="ui-block-a" style="width:49%">
+                                <apex:outputLabel value="First Name" for="firstName" style="margin-top:5px"/>
+                                <apex:input type="text" id="firstName" value="{!firstName}"/>                               
+                            </div>
+                            <div class="ui-block-b" style="width:2%">
+                                <span></span>                               
+                            </div>                              
+                            <div class="ui-block-c" style="width:49%">
+                                <apex:outputLabel value="Last Name" for="lastName" style="margin-top:5px"/>
+                                <apex:input type="text" id="lastName" value="{!lastName}"/>
+                            </div>                          
+                        </fieldset>
+                        <fieldset> <!-- Address-->
+                            <apex:outputLabel value="Address" for="address" style="margin-top:5px"/>
+                            <apex:input type="text" id="address" value="{!address}"/>                           
+                        </fieldset> 
+                        <fieldset><!-- City-->
+                            <apex:outputLabel value="City" for="city" style="margin-top:5px"/>
+                            <apex:input type="text" id="city" value="{!city}" style="width:60%"/>                           
+                        </fieldset>
+                        <fieldset><!-- State -->
+                            <apex:outputLabel value="State" for="state" style="margin-top:5px"/>
+                            <apex:inputHidden value="{!state}" id="selectedItemHidden"/> 
+                            <select id="stateList" onchange="jQuery('[id*=selectedItemHidden]').val(jQuery(this).val());">
+                                <apex:repeat value="{!states}" var="a">
+                                    <option value="{!a.id}">{!a.description}</option>
+                                </apex:repeat>
+                            </select>                       
+                        </fieldset> 
+                        <fieldset> <!-- Zipcode -->
+                            <apex:outputLabel value="Zipcode" for="zipcode" style="margin-top:5px"/>
+                            <apex:input type="text" id="zipcode" value="{!zipcode}"/>                           
+                        </fieldset> 
+                        <fieldset> <!-- Email -->
+                            <apex:outputLabel value="Email" for="email" style="margin-top:5px"/>
+                            <apex:input type="text" id="email" value="{!buyerEmail}"/>                           
+                        </fieldset>                                 
+                    </div>
+                    <div class="ui-block-b" style="width:10%">
+                    <span></span>                               
+                    </div>
+                    <div class="ui-block-c" style="width:50%">
+                        <fieldset>  <!-- Coverage Amount -->                            
+                            <div id="caContainer" style="margin-top:5px">
+                                <apex:outputLabel value="Coverage Amount ($)" for="coverage"/>
+                                <apex:input id="coverage" 
+                                            value="{!coverageAmt}"
+                                            type="range" 
+                                            html-min="0" 
+                                            html-max="1000000" 
+                                            html-step="25000"
+                                            html-data-highlight="true"
+                                            style="width:15%"
+                                            html-ng-model="Amount" 
+                                            html-ng-change="change()"/>
+                            </div>
+                        </fieldset>
+                        <fieldset> <!-- Doctor Visits-->
+                            <div id="docVisitsContainer" class=".full-width-slider glow" style="margin-top:15px">
+                                <apex:outputLabel value="Doctor Visits" for="docVisits"/>
+                                <apex:input id="docVisits" 
+                                            value="{!docVisits}"
+                                            type="range" 
+                                            html-min="1" 
+                                            html-max="3"
+                                            style="display:none" 
+                                            html-ng-model="DocVisits" 
+                                            html-ng-change="change()"/>
+                            </div>                              
+                        </fieldset>
+                        <fieldset> <!-- Weight -->
+                            <div id="weightContainer" style="margin-top:15px">
+                                <apex:outputLabel value="Weight (lbs)" for="weight"/>
+                                <apex:input id="weight"
+                                            value="{!weight}"
+                                            type="range" 
+                                            html-min="0" 
+                                            html-max="500"
+                                            html-step="5"
+                                            html-data-highlight="true"
+                                            style="width:15%"
+                                            html-ng-model="TheWeight"
+                                            html-ng-change="change()"/>
+                            </div>                              
+                        </fieldset>
+                        <fieldset> <!-- Smoking -->
+                            <div id="smokingContainer" class=".full-width-slider glow" style="margin-top:15px">
+                                <apex:outputLabel value="Smoking" for="smoking"/>
+                                <apex:input id="smoking" 
+                                            value="{!smoking}"
+                                            type="range" 
+                                            html-min="1" 
+                                            html-max="3"
+                                            style="display:none"
+                                            html-ng-model="SmokeFreq" 
+                                            html-ng-change="change()"/>
+                            </div>                              
+                        </fieldset>  
+                        <fieldset> <!-- Premium -->
+                            <div style="margin-top:15px" class=".ui-field-contain ui-grid-a"> 
+                                <!-- <input id="amountText" type="text" value="{!coverageAmt}"/> 
+                                <apex:input id="docText" type="text" value="{!docVisits}"/> 
+                                <apex:input id="weightText" type="text" value="{!weight}"/> 
+                                <apex:input id="smokeText" type="text" value="{!smoking}"/> 
+                                <apex:input id="premiumText" type="text" value="{!premium}"/> -->  
+                                <apex:outputLabel value="Premium per Month"/>                           
+                                <div class="ui-block-a">
+                                    <apex:input html-ng-model="premiumCalc" type="text" value="{!premium}" html-readonly="true"/>
+                                </div>
+                                <div class="ui-block-b">
+                                  <span></span>
+                                </div>
+
+                                <!--<span id="premiumTextVal">Premium is {{premiumCalc}} per month</span>
+                                <apex:outputText id="otprem" value="Premium is {0} per month">
+                                    <apex:param value="{!premium}"/>
+                                </apex:outputText>
+                                <apex:input html-ng-model="Amount" type="text" />                                   
+                                <apex:input html-ng-model="DocVisits" type="text" /> 
+                                <apex:input html-ng-model="TheWeight" type="text" /> 
+                                <apex:input html-ng-model="SmokeFreq" type="text" />-->
+                                                                              
+                            </div>
+                        </fieldset> 
+                        <fieldset> <!-- Premium -->
+                            <div style="margin-top:15px" class=".ui-field-contain ui-grid-a"> 
+                                <div class="ui-block-a">
+                                  <apex:commandButton action="{!createOpportunity}" value="Generate Quote" style="width:40%;"/>
+                                </div>                                                      
+                                <div class="ui-block-b">
+                                    <apex:commandButton action="{!createApplication}" value="Create Application" style="width:40%;"/>
+                                </div>                                                                              
+                            </div>
+                        </fieldset>                         
+                        <fieldset> <!-- Application Button-->
+                            <div style="margin-top:15px">                            
+                              
+                            </div>
+                        </fieldset>                         
+                    </div>                          
+                </fieldset>
+                <!-- Confirmation Popup-->
+                <apex:outputPanel id="popup" >
+                    <apex:outputPanel styleClass="customPopup" layout="block" rendered="{!displayPopUp}">
+                        <apex:outputText value="Quote: {0} ({1}) created.">
+                            <apex:param value="{!newQuote.Name}"/>
+                            <apex:param value="{!newQuote.id}"/>
+                        </apex:outputText>
+                        <apex:commandButton value="Close" onclick="closeModal()" rerender="popup" style="width:50%;"/>
+                        <apex:actionFunction name="closeModal" action="{!closePopup}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                <!-- /Confirmation Popup-->              
+            </apex:form>
+        </div>      
+      </div> <!-- /content -->
+      <apex:form >
+      <!-- Application Popup-->
+        <apex:outputPanel id="createApp">
+            <apex:outputPanel styleClass="customPopupApp" layout="block" rendered="{!displayApplication}">
+
+                <object data="{!$Resource.mock_form}" type="application/pdf" width="100%" height="88%">  
+                </object>
+                <div class="ui-grid-b">
+                    <div class="ui-block-a">
+                        <apex:commandButton value="Create Doc Pack" onclick="closeModal()" rerender="createApp" style="width:30%;"/> 
+                    </div>
+                    <div class="ui-block-b">
+                        <apex:commandButton value="Submit Application" onclick="closeModal()" rerender="createApp" style="width:30%;"/> 
+                    </div>
+                    <div class="ui-block-c">
+                        <apex:commandButton value="Cancel" onclick="closeModal()" rerender="createApp" style="width:30%;"/> 
+                    </div>                
+                </div>
+
+                <apex:actionFunction name="closeModal" action="{!closePopup}"/>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        <!-- /Confirmation Popup-->  
+      </apex:form>
+     </div> <!-- /page -->
+    </body>
+<!-- </html>    -->
+</apex:page>

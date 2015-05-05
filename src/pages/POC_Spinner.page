@@ -1,0 +1,3 @@
+<apex:page standardController="Motor__c" extensions="POC_Spinner" showHeader="false" sidebar="false" action="{!autorun}">
+
+</apex:page>

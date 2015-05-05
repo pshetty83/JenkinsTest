@@ -1,0 +1,74 @@
+<!-- Sample for creating a bar/column chart using SVG -->
+
+<apex:page showHeader="false" sidebar="false">
+    <apex:includeScript value="{!$Resource.d3}"/>
+
+    <style type="text/css">
+    	span.bar {
+    		display: inline-block;
+    		width: 20px;
+    		height: 75px;
+    		background-color: teal;
+    		margin-top: 20px;
+    		margin-right: 2px;
+    	}
+    </style>
+
+    <div align="center" style="margin-top:40px">
+     <script type="text/javascript">
+    	
+    	var dataset = [];                         //Initialize empty array
+		for (var i = 0; i < 25; i++) {            //Loop 25 times
+    		var newNumber = Math.random() * 30;   //New random number (0-30)
+    		dataset.push(Math.floor(newNumber));              //Add new number to array
+		}
+
+		var svgWidth = 500;
+		var svgHeight = 200;
+		var barPadding = 1;
+
+		var svg = d3.select("div")
+					.append("svg")
+					.attr("width", svgWidth)
+					.attr("height", svgHeight);
+
+		var rects = svg.selectAll("rect")
+					   .data(dataset)
+					   .enter()
+					   .append("rect")
+					   .attr("x", function(d,i){
+					   				return i * ( svgWidth / dataset.length );
+					   			  }
+					   )
+					   .attr("y", function(d){
+					   				return svgHeight - (d * 4);
+					   			  }
+					   )
+					   .attr("width", svgWidth / dataset.length - barPadding)
+					   .attr("height", function(d){
+					   					return d*4;
+					   				   }
+					   )
+					   .attr("fill", function(d){
+					   				  return "rgb(0," + (d * 5) + "," + (d * 5) + ")";
+					   				 }
+					   );
+
+		svg.selectAll("text")
+		   .data(dataset)
+		   .enter()
+		   .append("text")
+		   .text(function(d){ return d; })
+		   .attr("x", function(d,i){
+					   return i * (svgWidth / dataset.length) + (svgWidth / dataset.length - barPadding) / 2;
+					  }
+		   )
+		   .attr("y", function(d){
+		   				return svgHeight - (d * 4) + 15;
+		   			  }
+		   )
+		   .attr("text-anchor", "middle")
+		   .attr("fill", "white");
+     </script>   	
+    </div>
+</apex:page>

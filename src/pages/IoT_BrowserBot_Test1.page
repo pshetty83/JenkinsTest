@@ -1,0 +1,17 @@
+<apex:page controller="IoT_MotorTest" showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0">
+	
+	<body style="background: #f0f1f2">
+		<div id="controllerWrapper" style="margin: 0 auto">
+			<div id="top">
+				<span> UP </span>
+			</div>
+			<div id="middle">
+				<span> STOP </span>
+			</div>
+			<div id="bottom">
+				<span> DOWN </span>
+			</div>
+		</div>
+	</body>
+
+</apex:page>

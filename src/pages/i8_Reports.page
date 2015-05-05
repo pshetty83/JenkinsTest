@@ -1,0 +1,165 @@
+<apex:page showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0" html-ng-app="premcalc">
+
+    <head>
+
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <title>In Force</title>
+
+      <!-- jquerymobile and custom stylesheets and scripts-->
+      <apex:includeScript value="{!$Resource.i8_jquery_1_11}"/>
+      <apex:includeScript value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.js')}"/>      
+      <apex:stylesheet value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.css')}"/>
+      <apex:includeScript value="{!$Resource.angular}"/>
+      <apex:includeScript value="{!$Resource.d3}"/>
+      <apex:includeScript value="{!$Resource.i8_custom_script}"/>
+      <apex:stylesheet value="{!$Resource.i8_custom_css}"/>
+ 
+    </head>
+
+    <body>
+   <!-- Opportunity List Home Page-->
+     <div data-role="page" id="salesaid">
+
+      <div data-role="header" data-position="fixed" data-id="inforce" style="margin-top:10px">
+         <div data-role="navbar">
+            <ul>
+              <li>
+                <a href="/apex/i8_PremiumCalculator" id="tabCalculator">
+                  Premium Calculator
+              </a>
+            </li>            
+              <li>
+                <a href="/apex/i8_QuotesList" id="tabMyQuotes">
+                  MyQUOTES
+              </a>
+            </li>            
+            <li>
+              <a href="/apex/i8_OpportunityList" id="tabMyDeals">
+                  MyDEALS
+              </a>
+            </li>
+            <li>
+              <a href="/apex/i8_SalesAid" id="tabSalesAid">
+                  Sales Aid
+              </a>
+            </li>
+            <li>
+              <a href="/apex/i8_Reports" id="tabReports" class="ui-btn-active ui-state-persist">
+                  Facts And Figures
+              </a>
+            </li>
+            </ul>
+          </div> <!-- /navbar -->
+      </div> <!-- header -->
+
+      <div role="main" class="ui-content">
+        <!-- My Dashboard -->
+        <section>
+          <header>
+              <div style="padding-top:0.6em;" data-role="collapsible" data-iconpos="right" data-collapsed="true">
+              	<h3> My Performance Dashboard </h3> 
+		        <div id="chartContent" align="center" style="padding:0px"> 
+				  <script>
+
+					var width = 860,
+					    height = 500,
+					    radius = (Math.min(width, height) / 2) - 10;
+
+					var x = d3.scale.linear()
+					    .range([0, 2 * Math.PI]);
+
+					var y = d3.scale.linear()
+					    .range([0, radius]);
+
+					var color = d3.scale.category20c();
+
+					var svg = d3.select("#chartContent").append("svg")
+					    .attr("width", width)
+					    .attr("height", height)
+					  .append("g")
+					    .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10) + ")");
+
+					var partition = d3.layout.partition()
+					    .value(function(d) { return d.size; });
+
+					var arc = d3.svg.arc()
+					    .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+					    .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+					    .innerRadius(function(d) { return Math.max(0, y(d.y)); })
+					    .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+
+					d3.json("{!$Resource.deals}", function(error, root) {
+					  var g = svg.selectAll("g")
+					      .data(partition.nodes(root))
+					    .enter().append("g");
+
+					  var path = g.append("path")
+					    .attr("d", arc)
+					    .style("fill", function(d) { return d.color; })
+					    .on("click", click);
+
+					  var text = g.append("text")
+					    .attr("transform", function(d) { if(d.name=='Total') return 180; else return "rotate(" + computeTextRotation(d) + ")"; })
+					    .attr("x", function(d) { return y(d.y); })
+					    .attr("dx", "6") // margin
+					    .attr("dy", ".35em") // vertical-align
+					    .text(function(d) { return (d.name + '(' + (d.size) + ')'); });
+
+					  function click(d) {
+					    // fade out all text elements
+					    text.transition().attr("opacity", 0);
+
+					    path.transition()
+					      .duration(750)
+					      .attrTween("d", arcTween(d))
+					      .each("end", function(e, i) {
+					          // check if the animated element's data e lies within the visible angle span given in d
+					          if (e.x >= d.x && e.x < (d.x + d.dx)) {
+					            // get a selection of the associated text element
+					            var arcText = d3.select(this.parentNode).select("text");
+					            // fade in the text element and recalculate positions
+					            arcText.transition().duration(750)
+					              .attr("opacity", 1)
+					              .attr("transform", function() { if(e.name=='Total') return 180; else return "rotate(" + computeTextRotation(e) + ")" })
+					              .attr("x", function(d) { return y(d.y); });
+					          }
+					      });
+					  }
+					});
+
+					d3.select(self.frameElement).style("height", height + "px");
+
+					// Interpolate the scales!
+					function arcTween(d) {
+					  var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+					      yd = d3.interpolate(y.domain(), [d.y, 1]),
+					      yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+					  return function(d, i) {
+					    return i
+					        ? function(t) { return arc(d); }
+					        : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+					  };
+					}
+
+					function computeTextRotation(d) {
+					  return (x(d.x + d.dx / 2) - Math.PI / 2) / Math.PI*180;
+					}
+
+					</script> 
+		        </div>             	 
+              </div>
+              <div style="padding-top:0.6em;" data-role="collapsible" data-iconpos="right" data-collapsed="true">
+              	<h3> Comparision Chart </h3> 
+              	<div id="compareChart" align="center" style="padding:0px">
+          			<img src="{!$Resource.comp_chart}" style="width:60%; height:60%;max-width: 100%;"/>
+              	</div>
+              </div>		             
+          </header>
+              
+        </section> <!-- /My Dashboard -->
+      </div> <!-- /content -->
+
+     </div> <!-- /page -->          
+    </body>   
+</apex:page>

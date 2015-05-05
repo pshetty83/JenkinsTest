@@ -1,0 +1,109 @@
+<apex:page showHeader="false" sidebar="false" applyHtmlTag="true" applyBodyTag="false" docType="html-5.0" html-ng-app="premcalc">
+
+    <head>
+
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <title>In Force</title>
+
+      <!-- jquerymobile and custom stylesheets and scripts-->
+      <apex:includeScript value="{!$Resource.i8_jquery_1_11}"/>
+      <apex:includeScript value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.js')}"/>      
+      <apex:stylesheet value="{!URLFOR($Resource.jquery_mobile_1_4_2, 'jquery_mobile_1_4_2/jquery.mobile-1.4.2.css')}"/>
+      <apex:includeScript value="{!$Resource.angular}"/>
+      <apex:includeScript value="{!$Resource.d3}"/>
+      <apex:includeScript value="{!$Resource.i8_custom_script}"/>
+      <apex:stylesheet value="{!$Resource.i8_custom_css}"/>
+
+    </head>
+
+    <body>
+   <!-- Opportunity List Home Page-->
+     <div data-role="page" id="salesaid">
+
+      <div data-role="header" data-position="fixed" data-id="inforce" style="margin-top:10px">
+         <div data-role="navbar">
+            <ul>
+              <li>
+                <a href="/apex/i8_PremiumCalculator" id="tabCalculator">
+                  Premium Calculator
+              </a>
+            </li>            
+              <li>
+                <a href="/apex/i8_QuotesList" id="tabMyQuotes">
+                  MyQUOTES
+              </a>
+            </li>            
+            <li>
+              <a href="/apex/i8_OpportunityList" id="tabMyDeals">
+                  MyDEALS
+              </a>
+            </li>
+            <li>
+              <a href="/apex/i8_SalesAid" id="tabSalesAid" class="ui-btn-active ui-state-persist">
+                  Sales Aid
+              </a>
+            </li>
+            <li>
+              <a href="/apex/i8_Reports" id="tabReports">
+                  Facts And Figures
+              </a>
+            </li>
+            </ul>
+          </div> <!-- /navbar -->
+      </div> <!-- header -->
+
+      <div role="main" class="ui-content">
+        <!-- Policies section -->
+        <section>
+          <header>
+              <li class="ui-bar ui-bar-a ui-corner-all">
+                  <div style="padding-top:0.6em; width:75%" ><h3 > Plans/Polcies </h3></div>                
+              </li>
+          </header>
+          <div class="ui-body ui-body-a ui-corner-all" style="margin:10px;margin-bottom:20px">
+            <ul data-role="listview" data-filter="true" data-filter-placeholder="Search Plans/Policies..." data-inset="true">
+                <li><a href="#">Life</a></li>
+                <li><a href="#">Term Life</a></li>
+                <li><a href="#">Universal Life</a></li>
+                <li><a href="#">Indexed Universal Life</a></li>
+            </ul>          
+          </div>              
+        </section> <!-- Policies -->
+
+        <!-- Presentations section -->
+        <section>
+          <header>
+              <li class="ui-bar ui-bar-a ui-corner-all">
+                  <div style="padding-top:0.6em; width:75%" ><h3 > Presentations </h3></div>                
+              </li>
+          </header>
+          <div class="ui-body ui-body-a ui-corner-all" style="margin:10px;margin-bottom:20px">
+            <ul data-role="listview" data-filter="true" data-filter-placeholder="Search Presentations..." data-inset="true">
+                <li><a href="#">Customer Presentation 1</a></li>
+                <li><a href="#">Customer Presentation 2</a></li>
+                <li><a href="#">Customer Presentation 3</a></li>
+            </ul>           
+          </div>                   
+        </section> <!-- Presentation-->
+        <!-- Training section -->
+        <section>
+          <header>
+              <li class="ui-bar ui-bar-a ui-corner-all">
+                  <div style="padding-top:0.6em; width:75%" ><h3 > Trainings </h3></div>                
+              </li>
+          </header>
+          <div class="ui-body ui-body-a ui-corner-all" style="margin:10px;margin-bottom:20px">
+            <ul data-role="listview" data-filter="true" data-filter-placeholder="Search Trainings..." data-inset="true">
+                <li><a href="#">Agent Training 1</a></li>
+                <li><a href="#">Agent Training 2</a></li>
+                <li><a href="#">Agent Training 3</a></li>
+            </ul>           
+          </div>                   
+        </section> <!-- Training -->
+
+      </div> <!-- /content -->
+
+     </div> <!-- /page -->
+    </body>   
+</apex:page>
