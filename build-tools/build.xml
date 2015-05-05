@@ -3,7 +3,7 @@
     <property file="build.properties"/>
     <property environment="env"/>
 
-    <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce" classpath="/usr/sahre/ant/lib/ant-salesforce.jar" />
+    <taskdef resource="com/salesforce/antlib.xml" uri="antlib:com.salesforce" classpath="/usr/share/ant/lib/ant-salesforce.jar" />
 
     <!-- Shows removing code; only succeeds if done after deployCode -->
     <target name="undeployCode">
